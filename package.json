@@ -15,11 +15,7 @@
     "seed": "npx tsx prisma/seed.ts"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/engines",
-      "prisma",
-      "esbuild"
-    ]
+    "onlyBuiltDependencies": ["*"]
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
