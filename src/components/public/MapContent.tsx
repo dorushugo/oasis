@@ -46,7 +46,7 @@ function LocationButton() {
   return (
     <Button
       onClick={handleLocate}
-      className="absolute bottom-36 right-4 md:bottom-4 z-[1000] bg-card text-foreground border shadow-lg hover:bg-accent"
+      className="absolute bottom-36 left-4 md:bottom-4 md:left-4 z-[1000] bg-card text-foreground border shadow-lg hover:bg-accent"
       size="lg"
     >
       <Navigation className="w-5 h-5 mr-2" />
