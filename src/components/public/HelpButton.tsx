@@ -51,7 +51,7 @@ export default function HelpButton() {
     <>
       <button
         onClick={() => { setOpen(true); setSent(false); }}
-        className="fixed bottom-6 right-6 z-50 bg-destructive hover:bg-destructive/90 text-white font-semibold rounded-full shadow-sm flex items-center gap-2 px-5 py-3 text-sm transition-colors min-w-[48px] min-h-[48px]"
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-[9999] bg-destructive hover:bg-destructive/90 text-white font-semibold rounded-md shadow-sm flex items-center gap-2 px-5 py-3 text-sm transition-colors min-w-[48px] min-h-[48px]"
         aria-label="J'ai besoin d'aide"
       >
         <Phone className="w-4 h-4" />
@@ -74,7 +74,7 @@ export default function HelpButton() {
               <p className="text-sm text-muted-foreground mt-1">
                 Les services municipaux vont traiter votre demande.
               </p>
-              <Button className="mt-4 rounded-full" onClick={() => setOpen(false)}>
+              <Button className="mt-4 rounded-md" onClick={() => setOpen(false)}>
                 Fermer
               </Button>
             </div>
@@ -94,7 +94,7 @@ export default function HelpButton() {
               <Button
                 onClick={handleSubmit}
                 disabled={sending}
-                className="w-full rounded-full bg-destructive hover:bg-destructive/90 text-white"
+                className="w-full rounded-md bg-destructive hover:bg-destructive/90 text-white"
               >
                 {sending ? "Envoi..." : "Envoyer le signalement"}
               </Button>

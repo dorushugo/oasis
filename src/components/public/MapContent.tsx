@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
@@ -42,7 +42,7 @@ function LocationButton() {
   return (
     <Button
       onClick={handleLocate}
-      className="absolute bottom-4 right-4 z-[1000] bg-white text-oasis-dark shadow-lg hover:bg-oasis-bg"
+      className="absolute bottom-36 right-4 md:bottom-4 z-[1000] bg-card text-foreground border shadow-lg hover:bg-accent"
       size="lg"
     >
       <Navigation className="w-5 h-5 mr-2" />
@@ -78,8 +78,9 @@ export default function MapContent({ spots, selectedType }: MapContentProps) {
       center={[lat, lng]}
       zoom={zoom}
       className="h-full w-full"
-      zoomControl={true}
+      zoomControl={false}
     >
+      <ZoomControl position="topright" />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -92,8 +93,8 @@ export default function MapContent({ spots, selectedType }: MapContentProps) {
         >
           <Popup>
             <div className="p-1">
-              <h3 className="font-bold text-base text-oasis-dark">{spot.name}</h3>
-              <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
+              <h3 className="font-bold text-base text-foreground">{spot.name}</h3>
+              <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                 <MapPin className="w-3 h-3" />
                 {spot.address}
               </p>
@@ -108,7 +109,7 @@ export default function MapContent({ spots, selectedType }: MapContentProps) {
                 </p>
               )}
               {spot.description && (
-                <p className="text-sm text-gray-500 mt-1">{spot.description}</p>
+                <p className="text-sm text-muted-foreground mt-1">{spot.description}</p>
               )}
             </div>
           </Popup>

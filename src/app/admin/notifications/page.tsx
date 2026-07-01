@@ -83,7 +83,7 @@ export default function AdminNotificationsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold tracking-tight">Notifications</h1>
-        <Button className="rounded-full" onClick={() => setDialogOpen(true)}>
+        <Button className="rounded-md" onClick={() => setDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Nouvelle
         </Button>
@@ -164,7 +164,7 @@ export default function AdminNotificationsPage() {
                 </Select>
               </div>
             </div>
-            <Button className="w-full rounded-full" onClick={handleCreate} disabled={!form.title || !form.message}>
+            <Button className="w-full rounded-md" onClick={handleCreate} disabled={!form.title || !form.message}>
               Publier
             </Button>
           </div>

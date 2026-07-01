@@ -4,10 +4,13 @@ import "./globals.css";
 import Header from "@/components/public/Header";
 import MobileNav from "@/components/public/MobileNav";
 
-const satoshi = localFont({
-  src: "../../public/fonts/Satoshi-Variable.woff2",
-  variable: "--font-satoshi",
-  weight: "300 900",
+const marianne = localFont({
+  src: [
+    { path: "../../public/fonts/Marianne-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/Marianne-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../../public/fonts/Marianne-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-marianne",
   display: "swap",
 });
 
@@ -22,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={satoshi.variable}>
+    <html lang="fr" className={marianne.variable}>
       <body className="font-sans antialiased">
         <Header />
         <main className="pb-14 md:pb-0">{children}</main>

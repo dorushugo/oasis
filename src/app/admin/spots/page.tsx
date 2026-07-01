@@ -132,7 +132,7 @@ export default function AdminSpotsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold tracking-tight">Gestion des lieux</h1>
-        <Button className="rounded-full" onClick={() => setDialogOpen(true)}>
+        <Button className="rounded-md" onClick={() => setDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Ajouter
         </Button>
@@ -154,8 +154,8 @@ export default function AdminSpotsPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border shadow-sm bg-card overflow-hidden">
-        <Table>
+      <div className="rounded-lg border shadow-sm bg-card overflow-x-auto">
+        <Table className="min-w-[720px]">
           <TableHeader>
             <TableRow>
               <TableHead className="text-xs">Nom</TableHead>
@@ -218,7 +218,7 @@ export default function AdminSpotsPage() {
               <Label htmlFor="spot-address">Adresse</Label>
               <div className="flex gap-2 mt-1.5">
                 <Input id="spot-address" value={form.address} onChange={(e) => setForm((p) => ({ ...p, address: e.target.value }))} className="flex-1 rounded-md" />
-                <Button type="button" variant="outline" className="rounded-full" onClick={handleGeolocate}>
+                <Button type="button" variant="outline" className="rounded-md" onClick={handleGeolocate}>
                   <MapPin className="w-4 h-4 mr-1" />
                   Géolocaliser
                 </Button>
@@ -265,7 +265,7 @@ export default function AdminSpotsPage() {
               <Label htmlFor="spot-desc">Description</Label>
               <Textarea id="spot-desc" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="mt-1.5 rounded-md" rows={2} placeholder="Optionnel" />
             </div>
-            <Button className="w-full rounded-full" onClick={handleCreate} disabled={!form.name || !form.address || !form.lat || !form.lng}>
+            <Button className="w-full rounded-md" onClick={handleCreate} disabled={!form.name || !form.address || !form.lat || !form.lng}>
               Créer le lieu
             </Button>
           </div>

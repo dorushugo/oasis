@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map, Bell, Phone } from "lucide-react";
+import { Home, Map, Shield } from "lucide-react";
 import { clsx } from "clsx";
 
 const NAV_ITEMS = [
+  { href: "/", label: "Accueil", icon: Home },
   { href: "/carte", label: "Carte", icon: Map },
-  { href: "/", label: "Conseils", icon: Bell },
-  { href: "#aide", label: "Aide", icon: Phone },
+  { href: "/admin", label: "Agent", icon: Shield },
 ];
 
 export default function MobileNav() {

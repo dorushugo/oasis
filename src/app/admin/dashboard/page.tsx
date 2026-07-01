@@ -110,7 +110,7 @@ export default function DashboardPage() {
           <p className="text-sm text-muted-foreground">Situation en temps réel</p>
         </div>
         <Button
-          className="rounded-full bg-destructive hover:bg-destructive/90 text-white"
+          className="rounded-md bg-destructive hover:bg-destructive/90 text-white"
           onClick={() => setAlertOpen(true)}
         >
           <AlertTriangle className="w-4 h-4 mr-2" />
@@ -185,7 +185,7 @@ export default function DashboardPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="rounded-full"
+                    className="rounded-md"
                     onClick={() => handleMarkHandled(req.id)}
                   >
                     <CheckCircle className="w-3.5 h-3.5 mr-1" />
@@ -230,7 +230,7 @@ export default function DashboardPage() {
               />
             </div>
             <Button
-              className="w-full rounded-full bg-destructive hover:bg-destructive/90 text-white"
+              className="w-full rounded-md bg-destructive hover:bg-destructive/90 text-white"
               onClick={handlePublishAlert}
               disabled={!alertTitle || !alertMessage}
             >

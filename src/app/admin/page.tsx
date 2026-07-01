@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full rounded-full"
+              className="w-full rounded-md"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
