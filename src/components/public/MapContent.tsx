@@ -3,10 +3,14 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CoolingSpot } from "@/generated/prisma";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+function googleMapsUrl(spot: CoolingSpot) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`;
+}
 
 const SPOT_COLORS: Record<string, string> = {
   fontaine: "#3B82F6",
@@ -54,10 +58,35 @@ function LocationButton() {
 type MapContentProps = {
   spots: CoolingSpot[];
   selectedType: string | null;
+  selectedSpotId?: string | null;
 };
 
-export default function MapContent({ spots, selectedType }: MapContentProps) {
+function FlyToSpot({
+  spot,
+  markerRefs,
+}: {
+  spot: CoolingSpot | undefined;
+  markerRefs: React.MutableRefObject<Record<string, L.Marker | null>>;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!spot) return;
+    map.flyTo([spot.lat, spot.lng], Math.max(map.getZoom(), 16), {
+      duration: 0.8,
+    });
+    const marker = markerRefs.current[spot.id];
+    if (marker) {
+      window.setTimeout(() => marker.openPopup(), 400);
+    }
+  }, [spot, map, markerRefs]);
+
+  return null;
+}
+
+export default function MapContent({ spots, selectedType, selectedSpotId }: MapContentProps) {
   const [mounted, setMounted] = useState(false);
+  const markerRefs = useRef<Record<string, L.Marker | null>>({});
 
   useEffect(() => {
     setMounted(true);
@@ -72,6 +101,10 @@ export default function MapContent({ spots, selectedType }: MapContentProps) {
   const filteredSpots = selectedType
     ? spots.filter((s) => s.type === selectedType)
     : spots;
+
+  const selectedSpot = selectedSpotId
+    ? filteredSpots.find((s) => s.id === selectedSpotId)
+    : undefined;
 
   return (
     <MapContainer
@@ -90,6 +123,9 @@ export default function MapContent({ spots, selectedType }: MapContentProps) {
           key={spot.id}
           position={[spot.lat, spot.lng]}
           icon={createIcon(spot.type)}
+          ref={(ref) => {
+            markerRefs.current[spot.id] = ref;
+          }}
         >
           <Popup>
             <div className="p-1">
@@ -111,10 +147,21 @@ export default function MapContent({ spots, selectedType }: MapContentProps) {
               {spot.description && (
                 <p className="text-sm text-muted-foreground mt-1">{spot.description}</p>
               )}
+              <a
+                href={googleMapsUrl(spot)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                <Navigation className="w-3.5 h-3.5" />
+                Itinéraire (Google Maps)
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
           </Popup>
         </Marker>
       ))}
+      <FlyToSpot spot={selectedSpot} markerRefs={markerRefs} />
       <LocationButton />
     </MapContainer>
   );

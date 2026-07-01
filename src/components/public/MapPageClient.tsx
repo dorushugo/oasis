@@ -4,7 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { CoolingSpot } from "@/generated/prisma";
-import { MapPin, Droplets, Dumbbell, BookOpen, Store, Circle, ArrowLeft } from "lucide-react";
+import { MapPin, Droplets, Dumbbell, BookOpen, Store, Circle, ArrowLeft, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,10 @@ const MapContent = dynamic(() => import("@/components/public/MapContent"), {
     </div>
   ),
 });
+
+function googleMapsUrl(spot: CoolingSpot) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`;
+}
 
 const TYPE_CONFIG: Record<string, { label: string; icon: typeof MapPin }> = {
   fontaine: { label: "Fontaine", icon: Droplets },
@@ -33,10 +37,18 @@ type MapPageClientProps = {
 
 export default function MapPageClient({ spots }: MapPageClientProps) {
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const filteredSpots = selectedType
     ? spots.filter((s) => s.type === selectedType)
     : spots;
+
+  function handleSelectSpot(id: string) {
+    // Force le re-déclenchement de l'effet même si on reclique le même lieu.
+    setSelectedSpotId(null);
+    window.setTimeout(() => setSelectedSpotId(id), 0);
+  }
 
   return (
     <div className="h-[calc(100vh-4rem)] relative flex">
@@ -75,26 +87,44 @@ export default function MapPageClient({ spots }: MapPageClientProps) {
         <div className="p-4 space-y-2">
           {filteredSpots.map((spot) => {
             const config = TYPE_CONFIG[spot.type] || TYPE_CONFIG.autre;
+            const isActive = selectedSpotId === spot.id;
             return (
               <div
                 key={spot.id}
-                className="p-3 rounded-md border border-border hover:border-primary transition-colors"
+                className={`p-3 rounded-md border transition-colors ${
+                  isActive ? "border-primary bg-accent" : "border-border hover:border-primary"
+                }`}
               >
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs font-medium rounded">
-                    {config.label}
-                  </Badge>
-                  {spot.isOpen ? (
-                    <span className="text-[11px] font-semibold text-brand-green">Ouvert</span>
-                  ) : (
-                    <span className="text-[11px] font-semibold text-destructive">Fermé</span>
+                <button
+                  type="button"
+                  onClick={() => handleSelectSpot(spot.id)}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs font-medium rounded">
+                      {config.label}
+                    </Badge>
+                    {spot.isOpen ? (
+                      <span className="text-[11px] font-semibold text-brand-green">Ouvert</span>
+                    ) : (
+                      <span className="text-[11px] font-semibold text-destructive">Fermé</span>
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-sm mt-2 text-foreground">{spot.name}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{spot.address}</p>
+                  {spot.hours && (
+                    <p className="text-xs text-muted-foreground mt-1">{spot.hours}</p>
                   )}
-                </div>
-                <h3 className="font-semibold text-sm mt-2 text-foreground">{spot.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{spot.address}</p>
-                {spot.hours && (
-                  <p className="text-xs text-muted-foreground mt-1">{spot.hours}</p>
-                )}
+                </button>
+                <a
+                  href={googleMapsUrl(spot)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  Itinéraire (Google Maps)
+                </a>
               </div>
             );
           })}
@@ -111,12 +141,12 @@ export default function MapPageClient({ spots }: MapPageClientProps) {
           <ArrowLeft className="w-4 h-4" />
           Retour à l&apos;accueil
         </Link>
-        <MapContent spots={spots} selectedType={selectedType} />
+        <MapContent spots={spots} selectedType={selectedType} selectedSpotId={selectedSpotId} />
       </div>
 
       {/* Mobile sheet */}
       <div className="md:hidden absolute bottom-20 left-4 z-[1000]">
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger className="shadow-lg inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground h-9 gap-1.5 px-2.5 font-medium text-sm">
             <MapPin className="w-5 h-5 mr-2" />
             Liste ({filteredSpots.length})
@@ -154,21 +184,39 @@ export default function MapPageClient({ spots }: MapPageClientProps) {
                   const config = TYPE_CONFIG[spot.type] || TYPE_CONFIG.autre;
                   return (
                     <div key={spot.id} className="p-3 rounded-md border border-border">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs font-medium rounded">
-                          {config.label}
-                        </Badge>
-                        {spot.isOpen ? (
-                          <span className="text-[11px] font-semibold text-brand-green">Ouvert</span>
-                        ) : (
-                          <span className="text-[11px] font-semibold text-destructive">Fermé</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleSelectSpot(spot.id);
+                          setSheetOpen(false);
+                        }}
+                        className="w-full text-left"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-xs font-medium rounded">
+                            {config.label}
+                          </Badge>
+                          {spot.isOpen ? (
+                            <span className="text-[11px] font-semibold text-brand-green">Ouvert</span>
+                          ) : (
+                            <span className="text-[11px] font-semibold text-destructive">Fermé</span>
+                          )}
+                        </div>
+                        <h3 className="font-semibold text-sm mt-2">{spot.name}</h3>
+                        <p className="text-xs text-muted-foreground">{spot.address}</p>
+                        {spot.hours && (
+                          <p className="text-xs text-muted-foreground">{spot.hours}</p>
                         )}
-                      </div>
-                      <h3 className="font-semibold text-sm mt-2">{spot.name}</h3>
-                      <p className="text-xs text-muted-foreground">{spot.address}</p>
-                      {spot.hours && (
-                        <p className="text-xs text-muted-foreground">{spot.hours}</p>
-                      )}
+                      </button>
+                      <a
+                        href={googleMapsUrl(spot)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        Itinéraire (Google Maps)
+                      </a>
                     </div>
                   );
                 })}
